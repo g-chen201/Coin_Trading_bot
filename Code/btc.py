@@ -9,7 +9,7 @@ from Code.Trade import next_run_time, place_order, get_bitfinex_candle_data, aut
 from Code.Signals import signal_bolling
 #
 pd.set_option('expand_frame_repr', False)  # 当列太多时不换行
-
+#
 """
 自动交易思路
 
