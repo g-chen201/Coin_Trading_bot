@@ -7,7 +7,7 @@ from time import sleep
 import ccxt
 from Code.Trade import next_run_time, place_order, get_bitfinex_candle_data, auto_send_email, fetch_position, send_dingding_msg,fetch_margin_balance
 from Code.Signals import signal_bolling
-
+#
 pd.set_option('expand_frame_repr', False)  # 当列太多时不换行
 
 """
