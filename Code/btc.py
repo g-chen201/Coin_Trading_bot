@@ -10,6 +10,7 @@ from Code.Signals import signal_bolling
 #
 pd.set_option('expand_frame_repr', False)  # 当列太多时不换行
 # 测试一下同步2
+# 再次测试
 """
 自动交易思路
 

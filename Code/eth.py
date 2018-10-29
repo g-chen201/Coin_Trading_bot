@@ -24,7 +24,9 @@ pd.set_option('display.max_rows', 1000)
     5. 交易
 """
 # 再次测试
+# 3次测试
 # =====参数
+
 time_interval = '5m'  # 间隔运行时间
 exchange = ccxt.bitfinex()
 exchange2 = ccxt.bitfinex2()  # 创建交易所，此处为okex交易所
