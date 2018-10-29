@@ -23,7 +23,7 @@ pd.set_option('display.max_rows', 1000)
     4. 根据目前仓位、买卖信息，结束本次循环，或者进行交易
     5. 交易
 """
-
+# 再次测试
 # =====参数
 time_interval = '5m'  # 间隔运行时间
 exchange = ccxt.bitfinex()
