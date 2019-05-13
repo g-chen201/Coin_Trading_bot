@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 pd.set_option('expand_frame_repr', False)  # do not wrap
 pd.set_option('display.max_rows', 1000)
 
-# =====导入数据
+# =====import data
 df = pd.read_hdf(r'C:\Users\Jason\Desktop\coin\Data\ETHUSD.h5', key='5T')
 
 df = transfer_kline(df, '1H')
@@ -53,7 +53,7 @@ _df = pd.DataFrame()
 for m in m_list:
     for n in n_list:
         para = [n, m]
-        # 计算信号
+        # calculate signal
         df = signal_bolling(df.copy(), para)
         df = equity_curve_long_short(df, leverage=3, c_rate=2.0 / 1000)
         print(para, 'final return', df.iloc[-1]['equity_curve'])
