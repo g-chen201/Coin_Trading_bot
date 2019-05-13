@@ -7,7 +7,7 @@ from Code.Functions import transfer_kline
 from Code.Signals import signal_bolling, signal_turtle_close_open_long_short_with_stop_loss
 from Code.Evaluate import equity_curve_long_short
 import matplotlib.pyplot as plt
-
+ 
 pd.set_option('expand_frame_repr', False)  # do not wrap
 pd.set_option('display.max_rows', 1000)
 file_path = 'ETHUSD.h5'
