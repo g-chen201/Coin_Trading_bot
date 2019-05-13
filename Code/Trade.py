@@ -9,9 +9,9 @@ from smtplib import SMTP
 import requests
 import json
 
+
 # sleep
 def next_run_time(time_interval, ahead_time=1):
-
     if time_interval.endswith('m'):
         now_time = datetime.now()
         time_interval = int(time_interval.strip('m'))
@@ -26,21 +26,20 @@ def next_run_time(time_interval, ahead_time=1):
             else:
                 target_time = now_time.replace(hour=now_time.hour + 1, minute=0, second=0, microsecond=0)
 
-        # sleep直到靠近目标时间之前
-        if (target_time - datetime.now()).seconds < ahead_time+1:
-            print('距离target_time不足', ahead_time, '秒，下下个周期再运行')
+        # sleep until next run time
+        if (target_time - datetime.now()).seconds < ahead_time + 1:
+            print('Less than', ahead_time, 'Sec，program will run in next period')
             target_time += timedelta(minutes=time_interval)
-        print('下次运行时间', target_time)
+        print('Next Run Time', target_time)
         return target_time
     else:
         exit('time_interval doesn\'t end with m')
 
 
-# 获取okex的k线数据
+# OKex data
 def get_okex_candle_data(exchange, symbol, time_interval):
-
-    # 抓取数据
-    content = exchange.fetch_ohlcv(symbol, timeframe=time_interval, since=0) # since=0 是okex特有， 其他用since
+    # fetch data
+    content = exchange.fetch_ohlcv(symbol, timeframe=time_interval, since=0)  # since=0 only for OKex
 
     #
     df = pd.DataFrame(content, dtype=float)
@@ -51,11 +50,11 @@ def get_okex_candle_data(exchange, symbol, time_interval):
 
     return df
 
+
 def get_bitfinex_candle_data(exchange, symbol, time_interval, lines=1000):
     # scraping data
 
     now_time = exchange.milliseconds()
-    # 计算从什么时候开始获取K线，但保证获取的k线数等于lines
     if time_interval.endswith('m'):
         start_time = now_time - int(time_interval[:-1]) * lines * 60000
     if time_interval.endswith('h'):
@@ -68,7 +67,7 @@ def get_bitfinex_candle_data(exchange, symbol, time_interval, lines=1000):
         try:
             content = exchange.fetch_ohlcv(symbol, timeframe=time_interval, since=start_time, limit=lines)
 
-    # organizing data
+            # organizing data
             df = pd.DataFrame(content, dtype=float)
             df.rename(columns={0: 'MTS', 1: 'open', 2: 'high', 3: 'low', 4: 'close', 5: 'volume'}, inplace=True)
             df['candle_begin_time'] = pd.to_datetime(df['MTS'], unit='ms')
@@ -76,57 +75,56 @@ def get_bitfinex_candle_data(exchange, symbol, time_interval, lines=1000):
             df = df[['candle_begin_time_GMT8', 'open', 'high', 'low', 'close', 'volume']]
             return df
         except Exception as e:
-            print('下单报错，1s后重试', e)
+            print('Placing order error，retry in 1 sec', e)
             time.sleep(1)
             try_num += 1
-    auto_send_email('jasonchen701@hotmail.com', '程序出错', 'candle失败')
+    auto_send_email('jasonchen701@hotmail.com', 'Error', 'fetch candle failed')
     exit()
 
 
-# 下单
+# Place order
 def place_order(exchange, order_type, buy_or_sell, symbol, price, amount):
     """
-    下单
-    :param exchange: 交易所
+    Place order
+    :param exchange: Exchange name
     :param order_type: limit, market
     :param buy_or_sell: buy, sell
-    :param symbol: 买卖品种
-    :param price: 当market订单的时候，price无效
-    :param amount: 买卖量
+    :param symbol: eg. EOS/USD
+    :param price: when you place market order，this parameter is invalid
+    :param amount: how much you'd like to trade
     :return:
     """
     for i in range(5):
         try:
-            # 限价单
+            # limit order
             if order_type == 'limit':
-                # 买
+                # buy order
                 if buy_or_sell == 'buy':
-                    order_info = exchange.create_limit_buy_order(symbol, amount, price, {'type': 'limit'})  # 买单
-                # 卖
+                    order_info = exchange.create_limit_buy_order(symbol, amount, price, {'type': 'limit'})
+                    # sell order
                 elif buy_or_sell == 'sell':
-                    order_info = exchange.create_limit_sell_order(symbol, amount, price, {'type': 'limit'})  # 卖单
-            # 市价单
+                    order_info = exchange.create_limit_sell_order(symbol, amount, price, {'type': 'limit'})
+            # market order
             elif order_type == 'market':
-                # 买
                 if buy_or_sell == 'buy':
-                    order_info = exchange.create_market_buy_order(symbol=symbol, amount=amount)  # 买单
-                # 卖
+                    order_info = exchange.create_market_buy_order(symbol=symbol, amount=amount)
                 elif buy_or_sell == 'sell':
-                    order_info = exchange.create_market_sell_order(symbol=symbol, amount=amount)  # 卖单
+                    order_info = exchange.create_market_sell_order(symbol=symbol, amount=amount)
             else:
                 pass
 
-            print('下单成功：', order_type, buy_or_sell, symbol, price, amount)
-            print('下单信息：', order_info, '\n')
+            print('Placing Order successfully：', order_type, buy_or_sell, symbol, price, amount)
+            print('Order Info：', order_info, '\n')
             return order_info
 
         except Exception as e:
-            print('下单报错，1s后重试', e)
+            print('Placing Oder failed，retry in 1 sec', e)
             time.sleep(1)
 
-    print('下单报错次数过多，程序终止')
-    auto_send_email('jasonchen701@hotmail.com', '程序出错', '下单失败')
+    print('Too many times placing order，stop program')
+    auto_send_email('jasonchen701@hotmail.com', 'Error', 'Placing Oder failed')
     exit()
+
 
 def fetch_margin_balance(exchange, symbol):
     for i in range(5):
@@ -135,11 +133,11 @@ def fetch_margin_balance(exchange, symbol):
             return margin_balance
 
         except Exception as e:
-            print('获取balance出错，2s后重试', e)
+            print('Fetch balance error，retry in 2 sec', e)
             time.sleep(2)
 
-    print('查询次数数过多，程序终止')
-    auto_send_email('jasonchen701@hotmail.com', '程序出错', '获取balance失败')
+    print('Too many requesting，Stop program')
+    auto_send_email('jasonchen701@hotmail.com', 'Error', 'fetch balance fail')
     exit()
 
 
@@ -151,7 +149,7 @@ def auto_send_email(to_address, subject, content, from_address='iverson201@qq.co
     :param content:
     :param from_address:
     :return:
-    使用qq mail发送邮件的程序
+    Used qq mail send email
     """
     try:
         if if_add_time:
@@ -171,13 +169,12 @@ def auto_send_email(to_address, subject, content, from_address='iverson201@qq.co
         server.sendmail(from_address, to_address, msg.as_string())
         server.quit()
 
-        print('邮件发送成功')
+        print('Email sent successfully ')
     except Exception as err:
-        print('邮件发送失败', err)
+        print('Email sending failed', err)
 
 
-def send_dingding_msg(content, robot_id='25e8899c5426f4fe98075b0b37c9022c4a1de87fe5ca13b57dbf37592dfbeb74'):
-
+def send_dingding_msg(content, robot_id='your dingding robot ID'):
     try:
         msg = {
             "msgtype": "text",
@@ -188,7 +185,8 @@ def send_dingding_msg(content, robot_id='25e8899c5426f4fe98075b0b37c9022c4a1de87
         body = json.dumps(msg)
         requests.post(url, data=body, headers=Headers)
     except Exception as err:
-        print('钉钉发送失败', err)
+        print('fail to send dingding', err)
+
 
 def fetch_position(exchange, symbol):
     position = 0
@@ -202,9 +200,9 @@ def fetch_position(exchange, symbol):
             return position
 
         except Exception as e:
-            print('获取仓位出错，2s后重试', e)
+            print('error in fetching position，retry in 2 sec', e)
             time.sleep(2)
 
     print('Too much querying, the program stopped.')
-    auto_send_email('jasonchen701@hotmail.com', '程序出错', '获取仓位失败')
+    auto_send_email('jasonchen701@hotmail.com', 'Error', 'fail to fetch position')
     exit()

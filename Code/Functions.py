@@ -4,7 +4,7 @@
 
 import pandas as pd
 
-pd.set_option('expand_frame_repr', False)  # 当列太多时不换行
+pd.set_option('expand_frame_repr', False)  # do not wrap
 pd.set_option('display.max_rows', 1000)
 
 
@@ -25,8 +25,8 @@ def transfer_kline(df, rule_type='15T'):
          'low': 'min',
          'close': 'last',
          'volume': 'sum'})
-    # 交易不频繁的币，一般会有缺失值，以防万一
-    df.dropna(subset=['open'], how='any', inplace=True)  # how其实默认是any
+    # in case, some coins do not trade frequently, so has missing value
+    df.dropna(subset=['open'], how='any', inplace=True)  # how default is any
     df = df[df['volume'] > 0]
 
     df.reset_index(inplace=True)
