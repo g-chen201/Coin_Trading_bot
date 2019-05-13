@@ -4,7 +4,7 @@
 import pandas as pd
 
 
-# df = pd.read_hdf(r'C:\Users\Jason\Desktop\Trade_Program\Data\eth_bolling_signal.h5', key='all_data')
+# df = pd.read_hdf('eth_bolling_signal.h5', key='all_data')
 def equity_curve_long_short(df, leverage=3, c_rate=2.0 / 1000, min_margin_rate=0.15):
     """
 
