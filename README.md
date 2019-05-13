@@ -1,4 +1,5 @@
 # Coin_Trading_bot
+The code is based on Python3
 This is a sample version of trading bot program for Bitfinex and Okex, but it has completed functions for your use, including back-testing, scraping data, evaluating performance, automatically sending email, etc..
 
 I remained a simple algorithm, bollinger bands,  for your test.
