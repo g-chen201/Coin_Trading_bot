@@ -82,7 +82,7 @@ def equity_curve_long_short(df, leverage=3, c_rate=2.0 / 1000, min_margin_rate=0
     # == if position was forced close
     _index = df[df['cash_min'] <= min_margin].index
     if len(_index) > 0:
-        print('有爆仓')
+        print('Burned')
         df.loc[_index, 'forced_close_row'] = 1
         df['forced_close_row'] = df.groupby('start_time')['forced_close_row'].fillna(method='ffill')
         df.loc[(df['forced_close_row'] == 1) & (df['forced_close_row'].shift(1) != 1), 'cash_forced_close'] = df[

@@ -27,7 +27,7 @@ trade_coin = symbol.split('/')[0]
 leverage = 2
 para = [300, 3.4]  # strats parameter
 email = 'your email'
-# =====主程序
+# ===== Main Code
 while True:
     # ===monitoring email content
     email_title = 'Strats Report'

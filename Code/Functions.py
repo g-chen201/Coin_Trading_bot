@@ -18,7 +18,6 @@ def transfer_kline(df, rule_type='15T'):
     :return: transformed data_frame
     """
 
-    """ on：must be time data; base: 整点开始； label: K线开始时间， closed: [ )"""
     df = df.resample(rule=rule_type, on='candle_begin_time', base=0, label='left', closed='left').agg(
         {'open': 'first',
          'high': 'max',
