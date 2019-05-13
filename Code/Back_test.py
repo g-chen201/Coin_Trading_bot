@@ -10,9 +10,9 @@ import matplotlib.pyplot as plt
 
 pd.set_option('expand_frame_repr', False)  # do not wrap
 pd.set_option('display.max_rows', 1000)
-
-# =====import data 
-df = pd.read_hdf(r'C:\Users\Jason\Desktop\coin\Data\ETHUSD.h5', key='5T')
+file_path = 'ETHUSD.h5'
+# =====import data
+df = pd.read_hdf(file_path, key='5T')
 
 df = transfer_kline(df, '1H')
 
