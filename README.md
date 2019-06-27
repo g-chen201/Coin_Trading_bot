@@ -5,7 +5,7 @@ This is a sample version of trading bot program for Bitfinex and Okex, but it ha
 
 I remained a simple algorithm, bollinger bands,  for your test.
 
-If you want to use this bot, you need to apply an API account, and add your API key into the main.py.
+If you want to use this bot, you need to apply for an API account, and add your API key into the main.py.
 
 If you'd like to use the email function, you should know your email SMTP and port. This program can only use qq-mail, if you do not want to change it.
 
